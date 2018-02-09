@@ -87,14 +87,53 @@ describe('GET /todos/:id', () => {
 
   it('should return 404 if todo not found', (done) => {
     request(app)
-    .get(`/todo/${new ObjectID().toHexString()}`)
+    .get(`/todos/${new ObjectID().toHexString()}`)
     .expect(404)
     .end(done);
   });
 
   it('should return 404 for non-object ids', (done) => {
     request(app)
-    .get('/todo/123')
+    .get('/todos/123')
+    .expect(404)
+    .end(done);
+  });
+
+});
+
+describe('DELETE /todo/:id', () => {
+  var hexID = todos[1]._id.toHexString();
+  //should delte if everthing is correct
+  it('should delete a doc when found by ID', (done) => {
+    request(app)
+    .delete(`/todos/${hexID}`)
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.todo.text).toBe(todos[1].text);
+    }).end((err, res) => {
+      if(err){
+        return done(err)
+      }
+
+      Todo.findById(hexID).then((todo) => {
+        expect(todo).toNotExist();
+        done();
+      }).catch((er) => done(er));
+    });
+  });
+
+  //should return STATUS 404 when incorrect format
+  it('should return Status 404 when incorrect format', (done) => {
+    request(app)
+    .delete(`/todos/123`)
+    .expect(404)
+    .end(done);
+  });
+
+  //should return STATUS 404 when cannnot fidn document
+  it('should return Status 404 when cannnot fidn document', (done) => {
+    request(app)
+    .delete(`/todos/${new ObjectID().toHexString()}`)
     .expect(404)
     .end(done);
   });
