@@ -1,3 +1,17 @@
+var env = process.env.NODE_ENV || 'development';
+
+console.log(`evn **** ${env}`);
+
+if(env === 'development'){
+  process.env.PORT = 3000;
+  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoApp';
+} else if(env == 'test'){
+  process.env.PORT = 3000;
+  process.env.MONGODB_URI = 'mongodb://localhost:27017/TodoAppTest';
+} else if(process.env.NODE_ENV === 'production'){
+  process.env.MONGODB_URI = 'mongodb://olotem321:tay13211@ds231228.mlab.com:31228/todoapp';
+}
+
 const _ = require('lodash');
 const express = require('express');
 const bodyParser = require('body-parser');
@@ -8,7 +22,7 @@ var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
 
 var app = express();
-const port = process.env.PORT || 3000;
+
 
 app.use(bodyParser.json());
 
@@ -110,8 +124,8 @@ app.patch('/todos/:id', (req,res) => {
 
 });
 
-app.listen(port, () => {
-  console.log(`Start on port ${port}`);
+app.listen(process.env.PORT, () => {
+  console.log(`Start on port ${process.env.PORT}`);
 });
 
 module.exports = {
