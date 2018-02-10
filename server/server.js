@@ -26,6 +26,7 @@ app.post('/todos', (req,res) => {
 
 app.get('/todos', (req, res) => {
   Todo.find().then((doc) => {
+    // console.log(process.env.NODE_ENV);
     res.send({
       doc
     });
