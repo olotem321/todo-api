@@ -137,20 +137,19 @@ app.post('/users/login',(req, res) => {
   User.findByCredentials(body.email, body.password).then((user) => {
     return user.generateAuthToken().then((token) => {
       res.header('x-auth', token).send(user);
-    })
+    });
   }).catch((e) => {
     res.status(401).send();
   });
-  // res.send(body);
-  // User.findOne({email: user.email}).then((res) => {
-  //   if(res.password === user.password){
-  //     return user.generateAuthToken();
-  //   }else{
-  //     res.status(400).send(e);
-  //   }
-  // }).then((token) => {
-  //   res.header('x-auth', token).send(user);
-  // })
+
+});
+
+app.delete('/users/me/token', authenticate, (req, res) => {
+  req.user.removeToken(req.token).then(() => {
+    res.status(200).send();
+  }, () => {
+    res.status(400).send();
+  })
 });
 
 app.listen(process.env.PORT, () => {
